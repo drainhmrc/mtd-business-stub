@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/hmrc/mtd-business-stub.svg)](https://travis-ci.org/hmrc/mtd-business-stub) [ ![Download](https://api.bintray.com/packages/hmrc/releases/mtd-business-stub/images/download.svg) ](https://bintray.com/hmrc/releases/mtd-business-stub/_latestVersion)
 
-This is the Service specific - Backend Stub for Make Tax Digital for Business (MTDfB).
+This is the Service specific - Backend Stub for Making Tax Digital for Business (MTDfB).
 
 
 # API
