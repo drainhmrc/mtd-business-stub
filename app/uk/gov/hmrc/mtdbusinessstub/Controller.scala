@@ -31,7 +31,7 @@ trait Controller extends BaseController {
 
   def getTaxIdentifiers(token: String): Action[AnyContent] = Action.async { implicit request =>
     token match {
-      case _ if identifierMapping.contains(token) => Future.successful(Ok(identifierMapping(token).toString()))
+      case _ if identifierMapping.contains(token) => Future.successful(Ok(identifierMapping(token).toString))
       case _ => Future.successful(NotFound)
     }
   }

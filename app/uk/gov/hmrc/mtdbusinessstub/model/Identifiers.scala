@@ -21,6 +21,6 @@ import play.api.libs.json._
 case class Identifiers(name: String, value: String)
 
 object Identifiers {
-  implicit val identifiersFormat = Json.format[Identifiers]
+  implicit val identifiersFormat: OFormat[Identifiers] = Json.format[Identifiers]
 
 }

@@ -36,18 +36,18 @@ class ControllerSpec extends UnitSpec with WithFakeApplication with ScalaFutures
     "return 200" in {
       val result = await(Controller.getTaxIdentifiers("bar")(fakeRequest))
       status(result) shouldBe Status.OK
-      bodyOf(result) shouldBe foo.toString()
+      bodyOf(result) shouldBe foo.toString
     }
   }
 
-  "GET /[invalidToken]]" should {
+  "GET /[invalidToken]" should {
     "return 404" in {
       val result = await(Controller.getTaxIdentifiers("baz")(fakeRequest))
       status(result) shouldBe Status.NOT_FOUND
     }
   }
 
-  "GET /[noToken]]" should {
+  "GET /[noToken]" should {
     "return 404" in {
       val result = await(Controller.getTaxIdentifiers("")(fakeRequest))
       status(result) shouldBe Status.NOT_FOUND
