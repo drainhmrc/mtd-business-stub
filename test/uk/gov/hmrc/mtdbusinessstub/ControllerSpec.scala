@@ -19,8 +19,8 @@ package uk.gov.hmrc.mtdbusinessstub.controllers
 import akka.stream.Materializer
 import org.scalatest.concurrent.ScalaFutures
 import play.api.http.Status
-import play.api.libs.json.{JsValue, Json}
 import play.api.test.FakeRequest
+import uk.gov.hmrc.mtdbusinessstub.model.Identifiers
 import uk.gov.hmrc.play.test._
 
 class ControllerSpec extends UnitSpec with WithFakeApplication with ScalaFutures {
@@ -28,25 +28,15 @@ class ControllerSpec extends UnitSpec with WithFakeApplication with ScalaFutures
   implicit val materialiser: Materializer = fakeApplication.materializer
 
   val fakeRequest = FakeRequest("GET", "/")
-  val expectedResponseBody: JsValue =
-    Json.parse(s"""
-       |{
-       |  "identifiers":[
-       |    {
-       |      "name":"nino",
-       |      "value":"AA123456A"
-       |    }
-       |  ]
-       |}
-     """.stripMargin)
 
+  val foo = Identifiers("nino", "AA123456A")
 
 
   "GET /[validToken]" should {
     "return 200" in {
       val result = await(Controller.getTaxIdentifiers("bar")(fakeRequest))
       status(result) shouldBe Status.OK
-      bodyOf(result) shouldBe expectedResponseBody.toString()
+      bodyOf(result) shouldBe foo.toString()
     }
   }
 
