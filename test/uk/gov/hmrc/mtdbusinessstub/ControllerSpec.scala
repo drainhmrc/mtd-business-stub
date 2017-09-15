@@ -16,18 +16,19 @@
 
 package uk.gov.hmrc.mtdbusinessstub.controllers
 
+import akka.stream.Materializer
 import org.scalatest.concurrent.ScalaFutures
 import play.api.http.Status
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.play.test._
 
 class ControllerSpec extends UnitSpec with WithFakeApplication with ScalaFutures {
 
-  implicit val materialiser = fakeApplication.materializer
+  implicit val materialiser: Materializer = fakeApplication.materializer
 
   val fakeRequest = FakeRequest("GET", "/")
-  val expectedResponseBody =
+  val expectedResponseBody: JsValue =
     Json.parse(s"""
        |{
        |  "identifiers":[
@@ -39,17 +40,26 @@ class ControllerSpec extends UnitSpec with WithFakeApplication with ScalaFutures
        |}
      """.stripMargin)
 
-  "GET /mtdfbit/[validToken]" should {
+
+
+  "GET /[validToken]" should {
     "return 200" in {
-      val result = await(Controller.getTaxIdentifiers("mtdfbit", "12345")(fakeRequest))
+      val result = await(Controller.getTaxIdentifiers("bar")(fakeRequest))
       status(result) shouldBe Status.OK
       bodyOf(result) shouldBe expectedResponseBody.toString()
     }
   }
 
-  "GET /notexisting/[validToken]]" should {
+  "GET /[invalidToken]]" should {
     "return 404" in {
-      val result = await(Controller.getTaxIdentifiers("notexisting", "12345")(fakeRequest))
+      val result = await(Controller.getTaxIdentifiers("baz")(fakeRequest))
+      status(result) shouldBe Status.NOT_FOUND
+    }
+  }
+
+  "GET /[noToken]]" should {
+    "return 404" in {
+      val result = await(Controller.getTaxIdentifiers("")(fakeRequest))
       status(result) shouldBe Status.NOT_FOUND
     }
   }

@@ -1,3 +1,3 @@
 # microservice specific routes
 
-GET        /income-tax-subscription/:svc/:token         uk.gov.hmrc.mtdbusinessstub.controllers.Controller.getTaxIdentifiers(svc: String, token: String)
+GET        /income-tax-subscription/identifier-mapping/:token        uk.gov.hmrc.mtdbusinessstub.controllers.Controller.getTaxIdentifiers(token:String)

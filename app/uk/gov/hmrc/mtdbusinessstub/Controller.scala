@@ -16,18 +16,35 @@
 
 package uk.gov.hmrc.mtdbusinessstub.controllers
 
+import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.play.microservice.controller.BaseController
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import play.api.mvc._
+
 import scala.concurrent.Future
 
 object Controller extends Controller
 
 trait Controller extends BaseController {
 
-  def getTaxIdentifiers(svc: String, token: String) = Action.async { implicit request =>
-    svc match {
-      case "mtdfbit" => Future.successful(Ok(s"""{"identifiers":[{"name":"nino","value":"AA123456A"}]}"""))
+  val foo :JsValue =
+    Json.parse(
+      s"""
+         |{
+         |  "identifiers":[
+         |    {
+         |      "name":"nino",
+         |      "value":"AA123456A"
+         |    }
+         |  ]
+         |}
+     """.stripMargin)
+
+  val identifierMapping = Map("bar" -> foo)
+
+  def getTaxIdentifiers(token: String): Action[AnyContent] = Action.async { implicit request =>
+    token match {
+      case _ if identifierMapping.contains(token)=> Future.successful(Ok(identifierMapping(token).toString()))
       case _ => Future.successful(NotFound)
     }
   }
