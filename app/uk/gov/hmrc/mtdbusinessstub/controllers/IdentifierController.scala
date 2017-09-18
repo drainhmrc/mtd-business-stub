@@ -16,22 +16,26 @@
 
 package uk.gov.hmrc.mtdbusinessstub.controllers
 
+import play.api.mvc.Action
 import uk.gov.hmrc.play.microservice.controller.BaseController
-import uk.gov.hmrc.mtdbusinessstub.model.Identifiers
-import play.api.mvc._
+import uk.gov.hmrc.mtdbusinessstub.model.IdentifierMapping
 
 import scala.concurrent.Future
 
-object Controller extends Controller
+object IdentifierController extends IdentifierController
 
-trait Controller extends BaseController {
-  val foo = Identifiers("nino", "AA123456A")
+trait IdentifierController extends BaseController {
 
-  val identifierMapping = Map("bar" -> foo)
+  import IdentifierMapping._
 
-  def getTaxIdentifiers(token: String): Action[AnyContent] = Action.async { implicit request =>
-    token match {
-      case _ if identifierMapping.contains(token) => Future.successful(Ok(identifierMapping(token).toString))
+  def getTaxIdentifier = Action.async { implicit request =>
+    Future.successful(Ok)
+  }
+
+  def getTaxIdentifiers(token: String) = Action.async { implicit request =>
+
+    IdentifierMapping.getTaxIdentifiers(token) match {
+      case Some(identifier) => Future.successful(Ok(identifier))
       case _ => Future.successful(NotFound)
     }
   }
