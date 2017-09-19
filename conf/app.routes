@@ -1,4 +1,3 @@
 # microservice specific routes
 
-GET /income-tax-subscription/identifier-mapping uk.gov.hmrc.mtdbusinessstub.controllers.IdentifierController.getTaxIdentifier
 GET /income-tax-subscription/identifier-mapping/:token uk.gov.hmrc.mtdbusinessstub.controllers.IdentifierController.getTaxIdentifiers(token:String)

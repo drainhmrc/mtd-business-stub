@@ -16,9 +16,10 @@
 
 package uk.gov.hmrc.mtdbusinessstub.controllers
 
+import play.api.libs.json.Json
 import play.api.mvc.Action
 import uk.gov.hmrc.play.microservice.controller.BaseController
-import uk.gov.hmrc.mtdbusinessstub.model.IdentifierMapping
+import uk.gov.hmrc.mtdbusinessstub.model._
 
 import scala.concurrent.Future
 
@@ -26,17 +27,17 @@ object IdentifierController extends IdentifierController
 
 trait IdentifierController extends BaseController {
 
-//  import IdentifierMapping._
 
-  def getTaxIdentifier = Action.async { implicit request =>
-    Future.successful(Ok)
-  }
+  implicit val identifierFormat = Json.format[Identifier]
+  implicit val identifiersFormat = Json.format[Identifiers]
+
 
   def getTaxIdentifiers(token: String) = Action.async { implicit request =>
 
     IdentifierMapping.getTaxIdentifiers(token) match {
-      case Some(identifier) => Future.successful(Ok(identifier))
+      case Some(identifier) => Future.successful(Ok(Json.toJson(identifier)))
       case _ => Future.successful(NotFound)
     }
   }
+
 }

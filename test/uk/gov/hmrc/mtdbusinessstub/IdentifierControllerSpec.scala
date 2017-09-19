@@ -25,6 +25,7 @@ import play.api.http.Status
 import play.api.test.Helpers._
 import play.api.libs.json._
 import uk.gov.hmrc.mtdbusinessstub.controllers.IdentifierController
+import uk.gov.hmrc.mtdbusinessstub.model.IdentifierMapping
 import uk.gov.hmrc.play.test.UnitSpec
 
 class IdentifierControllerSpec extends UnitSpec with OneAppPerSuite with MockitoSugar with ScalaFutures {
@@ -36,15 +37,20 @@ class IdentifierControllerSpec extends UnitSpec with OneAppPerSuite with Mockito
       val result = call(controller.getTaxIdentifiers(UKNOWN_TOKEN), FakeRequest()).futureValue
       status(result) shouldBe Status.NOT_FOUND
     }
-    "Return a ok for a function" in new TestCase {
-      val result = call(controller.getTaxIdentifier, FakeRequest()).futureValue
-      status(result) shouldBe Status.OK
-    }
+
     "Return the correct NINO for an known token" in new TestCase {
       val result = call(controller.getTaxIdentifiers(KNOWN_TOKEN), FakeRequest())
       status(result) shouldBe Status.OK
       val message = Json.parse(Helpers.contentAsString(result))
       message shouldBe expectedResult(KNOWN_NINO)
+    }
+
+    "Return sucessfully for all known tokens" in new TestCase {
+      IdentifierMapping.identifierMappings.foreach{
+        case (identifier, _) =>
+          val result = call(controller.getTaxIdentifiers(identifier), FakeRequest())
+          status(result) shouldBe Status.OK
+      }
     }
   }
 

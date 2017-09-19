@@ -16,18 +16,11 @@
 
 package uk.gov.hmrc.mtdbusinessstub.model
 
-import com.fasterxml.jackson.annotation.JsonValue
-import play.api.libs.json._
-
 
 object IdentifierMapping {
 
 
-  implicit val identifierFormat = Json.format[Identifier]
-  implicit val identifiersFormat = Json.format[Identifiers]
-
-
-  val identifierMapping = Map(
+  val identifierMappings = Map(
     "91abdbb1-6ad4-4419-8f33-a7ea6cf8e388" -> Identifier("nino", "AA123456C"),
     "23baacf4-2bc1-1114-2d12-b5ac6cf8e312" -> Identifier("nino", "AA123456A"),
     "44acadd2-2bc1-1114-2d12-b5ac6cf8e312" -> Identifier("nino", "BB123456B"),
@@ -39,12 +32,13 @@ object IdentifierMapping {
     "23baacf4-2bc1-1114-2d12-b5ac6cf8e318" -> Identifier("nino", "BB123456D")
   )
 
-  def getTaxIdentifiers(token: String):Option[JsValue] = {
-    identifierMapping.get(token) match {
-      case Some(identifier) => Some(Json.toJson(Identifiers(Seq(identifier))))
+  def getTaxIdentifiers(token: String) = {
+    identifierMappings.get(token) match {
+      case Some(identifier) => Some(Identifiers(Seq(identifier)))
       case _ => None
     }
   }
 }
+
 case class Identifier(name: String, value: String)
 case class Identifiers(identifiers: Seq[Identifier])
