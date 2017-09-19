@@ -36,8 +36,12 @@ class IdentifierControllerSpec extends UnitSpec with OneAppPerSuite with Mockito
       val result = call(controller.getTaxIdentifiers(UKNOWN_TOKEN), FakeRequest()).futureValue
       status(result) shouldBe Status.NOT_FOUND
     }
+    "Return a ok for a function" in new TestCase {
+      val result = call(controller.getTaxIdentifier, FakeRequest()).futureValue
+      status(result) shouldBe Status.OK
+    }
     "Return the correct NINO for an known token" in new TestCase {
-      val result = call(controller.getTaxIdentifiers(KNOWN_TOKEN), FakeRequest()).futureValue
+      val result = call(controller.getTaxIdentifiers(KNOWN_TOKEN), FakeRequest())
       status(result) shouldBe Status.OK
       val message = Json.parse(Helpers.contentAsString(result))
       message shouldBe expectedResult(KNOWN_NINO)

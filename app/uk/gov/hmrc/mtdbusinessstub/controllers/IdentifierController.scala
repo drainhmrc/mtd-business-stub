@@ -26,7 +26,7 @@ object IdentifierController extends IdentifierController
 
 trait IdentifierController extends BaseController {
 
-  import IdentifierMapping._
+//  import IdentifierMapping._
 
   def getTaxIdentifier = Action.async { implicit request =>
     Future.successful(Ok)
