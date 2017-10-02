@@ -6,7 +6,7 @@ This is the Service specific - Backend Stub for Making Tax Digital for Business 
 
 
 # API
-=============
+
 
 Method | Endpoint | Description
 -------|----------|--------------------------------
