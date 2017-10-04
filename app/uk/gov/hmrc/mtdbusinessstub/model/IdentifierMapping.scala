@@ -23,7 +23,7 @@ object IdentifierMapping {
   val identifierMappings = Map(
     "91abdbb1-6ad4-4419-8f33-a7ea6cf8e388" -> Identifier("nino", "AA123456C"),
     "23baacf4-2bc1-1114-2d12-b5ac6cf8e312" -> Identifier("nino", "AA123456A"),
-    "44acadd2-2bc1-1114-2d12-b5ac6cf8e312" -> Identifier("nino", "BB123456B"),
+    "44acadd2-2bc1-1114-2d12-b5ac6cf8e312" -> Identifier("nino", "BB123457B"),
     "23baacf4-2bc1-1114-2d12-b5ac6cf8e313" -> Identifier("nino", "CC123456C"),
     "23baacf4-2bc1-1114-2d12-b5ac6cf8e314" -> Identifier("nino", "EE123456D"),
     "23baacf4-2bc1-1114-2d12-b5ac6cf8e315" -> Identifier("nino", "EE123456A"),

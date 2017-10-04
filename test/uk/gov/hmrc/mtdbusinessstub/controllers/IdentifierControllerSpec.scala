@@ -14,19 +14,23 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.mtdbusinessstub
+package uk.gov.hmrc.mtdbusinessstub.controllers
 
 import akka.stream.Materializer
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.OneAppPerSuite
-import play.api.test.{FakeRequest, Helpers}
 import play.api.http.Status
-import play.api.test.Helpers._
 import play.api.libs.json._
-import uk.gov.hmrc.mtdbusinessstub.controllers.IdentifierController
-import uk.gov.hmrc.mtdbusinessstub.model.IdentifierMapping
+import play.api.test.Helpers._
+import play.api.test.{FakeRequest, Helpers}
+import uk.gov.hmrc.mtdbusinessstub.connectors.EntityResolverConnector
+import uk.gov.hmrc.mtdbusinessstub.model.{Identifier, IdentifierMapping}
+import uk.gov.hmrc.play.config.ServicesConfig
+import uk.gov.hmrc.play.http.{HeaderCarrier, HttpDelete, HttpResponse}
 import uk.gov.hmrc.play.test.UnitSpec
+
+import scala.concurrent.Future
 
 class IdentifierControllerSpec extends UnitSpec with OneAppPerSuite with MockitoSugar with ScalaFutures {
 
@@ -52,6 +56,12 @@ class IdentifierControllerSpec extends UnitSpec with OneAppPerSuite with Mockito
           status(result) shouldBe Status.OK
       }
     }
+
+    "delete the preferences for all known ninos" in new TestCase {
+      deletedNinos.size shouldBe 0
+      call(controller.resetAllPreferences(), FakeRequest()).futureValue
+      deletedNinos.size shouldBe 9
+    }
   }
 
 
@@ -59,9 +69,23 @@ class IdentifierControllerSpec extends UnitSpec with OneAppPerSuite with Mockito
     val UKNOWN_TOKEN = "Unknown"
     val KNOWN_TOKEN = "91abdbb1-6ad4-4419-8f33-a7ea6cf8e388"
     val KNOWN_NINO = "AA123456C"
+    var deletedNinos = Set[String]()
 
     def expectedResult(nino: String) = Json.parse(s"""{"identifiers":[{"name":"nino","value":"$nino"}]}""")
 
-    val controller = new IdentifierController{}
+    def connector = new EntityResolverConnector {
+      override def http: HttpDelete = ???
+
+      override def serviceUrl: String = ???
+
+      override def deleteNino(nino: Identifier)(implicit headerCarrier: HeaderCarrier) = {
+        deletedNinos += nino.value
+        Future.successful(play.api.mvc.Results.Ok)
+      }
+    }
+
+    val controller = new IdentifierController with ServicesConfig {
+      override def entityResolverConnector: EntityResolverConnector = connector
+    }
   }
 }
