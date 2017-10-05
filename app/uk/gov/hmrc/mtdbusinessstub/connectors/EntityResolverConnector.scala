@@ -17,7 +17,6 @@
 package uk.gov.hmrc.mtdbusinessstub.connectors
 
 import play.api.http.Status
-import play.api.mvc.Result
 import uk.gov.hmrc.mtdbusinessstub.model.Identifier
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpDelete}
 
@@ -33,8 +32,9 @@ trait EntityResolverConnector extends Status {
 
   def url(path: String) = s"$serviceUrl$path"
 
-  def deleteNino(nino: Identifier)(implicit headerCarrier: HeaderCarrier) : Future[Result] = {
-    //http.DELETE(url(s"/entity-resolver-admin/paye/$nino"))
+  def deleteNino(nino: Identifier)(implicit headerCarrier: HeaderCarrier) = {
+    val callingUrl = url(s"/entity-resolver-admin/paye/${nino.value}")
+    http.DELETE(callingUrl)
     Future.successful(play.api.mvc.Results.Ok)
   }
 }
