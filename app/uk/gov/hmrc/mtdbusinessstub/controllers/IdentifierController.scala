@@ -27,6 +27,7 @@ import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.http.HttpDelete
 
 import scala.concurrent.{Future, Promise}
+import scala.util.Success
 
 object IdentifierController extends IdentifierController with ServicesConfig {
   override def entityResolverConnector: EntityResolverConnector = new EntityResolverConnector {
@@ -59,7 +60,11 @@ trait IdentifierController extends BaseController {
     IdentifierMapping.identifierMappings.map {
       case (_, nino) => entityResolverConnector.deleteNino(nino)
     }.foldRight(defaultValue.future) {
-      case (result, _) => result
+      case (result, accumulator) =>
+        accumulator.value match {
+          case Some(Success(previousResult)) if previousResult != Ok => Future.successful(previousResult)
+          case _ => result
+        }
     }
   }
 }
