@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.mtdbusinessstub
+package uk.gov.hmrc.mtdbusinessstub.controllers
 
 import akka.stream.Materializer
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.OneAppPerSuite
-import play.api.test.{FakeRequest, Helpers}
 import play.api.http.Status
-import play.api.test.Helpers._
 import play.api.libs.json._
-import uk.gov.hmrc.mtdbusinessstub.controllers.IdentifierController
+import play.api.mvc.Result
+import play.api.test.Helpers._
+import play.api.test.{FakeRequest, Helpers}
 import uk.gov.hmrc.mtdbusinessstub.model.IdentifierMapping
+import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.test.UnitSpec
 
 class IdentifierControllerSpec extends UnitSpec with OneAppPerSuite with MockitoSugar with ScalaFutures {
@@ -34,14 +35,14 @@ class IdentifierControllerSpec extends UnitSpec with OneAppPerSuite with Mockito
 
   "Identifier Controller" should {
     "Return Not Found for an unknown token" in new TestCase {
-      val result = call(controller.getTaxIdentifiers(UKNOWN_TOKEN), FakeRequest()).futureValue
+      val result: Result = call(controller.getTaxIdentifiers(UKNOWN_TOKEN), FakeRequest()).futureValue
       status(result) shouldBe Status.NOT_FOUND
     }
 
     "Return the correct NINO for an known token" in new TestCase {
-      val result = call(controller.getTaxIdentifiers(KNOWN_TOKEN), FakeRequest())
+      val result : Result = call(controller.getTaxIdentifiers(KNOWN_TOKEN), FakeRequest())
       status(result) shouldBe Status.OK
-      val message = Json.parse(Helpers.contentAsString(result))
+      val message: JsValue = Json.parse(Helpers.contentAsString(result))
       message shouldBe expectedResult(KNOWN_NINO)
     }
 
@@ -60,8 +61,8 @@ class IdentifierControllerSpec extends UnitSpec with OneAppPerSuite with Mockito
     val KNOWN_TOKEN = "91abdbb1-6ad4-4419-8f33-a7ea6cf8e388"
     val KNOWN_NINO = "AA123456C"
 
-    def expectedResult(nino: String) = Json.parse(s"""{"identifiers":[{"name":"nino","value":"$nino"}]}""")
+    def expectedResult(nino: String): JsValue = Json.parse(s"""{"identifiers":[{"name":"nino","value":"$nino"}]}""")
 
-    val controller = new IdentifierController{}
+    val controller = new IdentifierController with ServicesConfig
   }
 }

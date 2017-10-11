@@ -19,14 +19,16 @@ package uk.gov.hmrc.mtdbusinessstub.controllers
 import play.api.libs.json.Json
 import play.api.mvc.Action
 import uk.gov.hmrc.play.microservice.controller.BaseController
+import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import uk.gov.hmrc.mtdbusinessstub.model._
+import uk.gov.hmrc.play.config.ServicesConfig
 
 import scala.concurrent.Future
 
-object IdentifierController extends IdentifierController
+object IdentifierController extends IdentifierController with ServicesConfig
 
 trait IdentifierController extends BaseController {
-
+  this: ServicesConfig =>
 
   implicit val identifierFormat = Json.format[Identifier]
   implicit val identifiersFormat = Json.format[Identifiers]
@@ -40,4 +42,7 @@ trait IdentifierController extends BaseController {
     }
   }
 
+  def getNinos() = Action.async { implicit request =>
+    Future.successful(Ok(Json.toJson(IdentifierMapping.identifierMappings.map(_._2).filter(_.name == "nino").map(_.value))))
+  }
 }
